@@ -1,0 +1,60 @@
+Некоторые возможные коды, которые могут использоваться с этой платформой:
+
+Пример создания пространства (таблицы) и индекса в базе данных:
+
+```lua
+-- Подключение к базе данных
+local box = require('box')
+box.cfg{}
+
+-- Создание пространства (таблицы)
+local space = box.schema.space.create('my_space')
+
+-- Определение полей в пространстве
+space:format({
+    {name = 'id', type = 'integer'},
+    {name = 'name', type = 'string'}
+})
+
+-- Создание индекса на поле "id"
+space:create_index('primary', {
+    parts = {'id'},
+    unique = true
+})
+```
+
+Пример вставки данных в базу данных:
+
+```lua
+-- Вставка данных в пространство
+space:insert({1, 'John'})
+space:insert({2, 'Alice'})
+```
+
+Пример выполнения запроса на выборку данных из базы данных:
+
+```lua
+-- Выборка всех данных из пространства
+local result = space:select()
+for _, tuple in ipairs(result) do
+    print(tuple[1], tuple[2])
+end
+```
+
+Пример создания сервера приложений и определения эндпоинта:
+
+```lua
+-- Подключение к серверу приложений
+local http = require('http.server')
+local server = http.new()
+
+-- Определение обработчика для эндпоинта '/'
+server:route({path = '/'}, function(req, res)
+    res:write('Hello, world!')
+end)
+
+-- Запуск сервера на порту 8080
+server:listen(8080)
+```
+
+ 
