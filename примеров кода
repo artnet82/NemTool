@@ -1,0 +1,58 @@
+Ещё несколько примеров кода, которые могут быть полезны:
+
+1. Обработка запросов на эндпоинтах с использованием маршрутизации:
+
+```lua
+-- Обработчик для эндпоинта '/users'
+server:route({path = '/users'}, function(req, res)
+    -- Логика обработки запроса для эндпоинта '/users'
+    -- Например, получение списка пользователей из базы данных и отправка ответа
+    local users = space:select()
+    res:json(users)
+end)
+```
+
+2. Использование параметров запроса:
+
+```lua
+-- Обработчик для эндпоинта '/user'
+server:route({path = '/user'}, function(req, res)
+    -- Получение значения параметра 'id' из запроса
+    local id = req:query_param('id')
+    
+    -- Логика обработки запроса для эндпоинта '/user'
+    -- Например, получение информации о пользователе с заданным id из базы данных
+    local user = space:select{id}
+    res:json(user)
+end)
+```
+
+3. Обработка POST-запросов и получение данных из тела запроса:
+
+```lua
+-- Обработчик для эндпоинта '/user' с методом POST
+server:route({path = '/user', method = 'POST'}, function(req, res)
+    -- Получение данных из тела запроса в формате JSON
+    local data = req:json()
+    
+    -- Логика обработки POST-запроса для эндпоинта '/user'
+    -- Например, создание нового пользователя в базе данных
+    space:insert{data.id, data.name}
+    
+    -- Отправка ответа
+    res:write('User created successfully')
+end)
+```
+
+4. Обработка ошибок и возврат соответствующих HTTP-статусов:
+
+```lua
+-- Обработка ошибки 404 - эндпоинт не найден
+server:route({path = '/404'}, function(req, res)
+    res:send({status = 404, body = 'Not found'})
+end)
+
+-- Обработка ошибки 500 - внутренняя ошибка сервера
+server:route({path = '/500'}, function(req, res)
+    res:send({status = 500, body = 'Internal server error'})
+end)
