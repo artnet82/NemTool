@@ -1,5 +1,7 @@
 local http = require('http.server')
 local box = require('box')
+local json = require('cjson')
+local http_client = require('socket.http')
 
 -- Подключение к базе данных
 box.cfg{}
@@ -11,6 +13,16 @@ space:format({
     {name = 'name', type = 'string'}
 })
 space:create_index('primary', {parts = {'id'}, unique = true})
+
+-- Получение данных из URL
+local url = 'https://data.id/'
+local response, status = http_client.request(url)
+if status == 200 then
+    local data = json.decode(response)
+    for _, user in ipairs(data) do
+        space:insert{user.id, user.name}
+    end
+end
 
 -- Создание сервера приложений
 local server = http.new()
