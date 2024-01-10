@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My App</title>
+  </head>
+  <body>
+    <h1>Пользователи</h1>
+    <ul id="users"></ul>
+    <button onclick="createUser()">Создать пользователя</button>
+    <script>
+      // Получить всех пользователей с сервера
+      function fetchUsers() {
+        fetch('http://localhost:8080/users')
+          .then(response => response.json())
+          .then(users => {
+            const ul = document.getElementById('users');
+            ul.innerHTML = '';
+            for (const user of users) {
+              const li = document.createElement('li');
+              li.textContent = `${user.id}: ${user.name}`;
+              ul.appendChild(li);
+            }
+          })
+          .catch(error => console.error(error));
+      }
+
+      // Создать нового пользователя на сервере
+      function createUser() {
+        const data = {
+          id: Date.now(),
+          name: prompt('Введите имя:')
+        };
+        fetch('http://localhost:8080/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Не удалось создать пользователя');
+            }
+            return response.text();
+          })
+          .then(text => {
+            alert(text);
+            fetchUsers();
+          })
+          .catch(error => console.error(error));
+      }
+
+      // Получить пользователей при загрузке страницы
+      fetchUsers();
+    </script>
+  </body>
+</html>
