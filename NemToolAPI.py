@@ -30,6 +30,11 @@ class NemToolAPI:
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
+    def add_column(self, table_name, column_name, column_type):
+        query = f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"
+        self.cursor.execute(query)
+        self.connection.commit()
+
     def close_connection(self):
         self.cursor.close()
         self.connection.close()
